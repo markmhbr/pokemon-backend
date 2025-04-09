@@ -9,7 +9,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true, // biar bisa dipake di semua module
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI as string),
+    MongooseModule.forRoot(process.env.MONGODB_URI + '&tls=true'),
     HttpModule,
     PokemonModule,
   ],
