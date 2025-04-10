@@ -60,5 +60,11 @@ export class PokemonService {
   async findAll(): Promise<Pokemon[]> {
     return this.pokemonModel.find().exec();
   }
+
+  async deleteAllPokemon(): Promise<void> {
+    await this.pokemonModel.deleteMany({});
+  }
+  
+  
   
 }

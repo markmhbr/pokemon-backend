@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Delete } from '@nestjs/common';
 import { PokemonService } from './pokemon.service';
 import { Pokemon } from './schemas/pokemon.schema';
 
@@ -17,4 +17,11 @@ export class PokemonController {
     await this.pokemonService.fetchAndSavePokemonData();
     return { message: 'Data Pokémon berhasil diambil dan disimpan ke MongoDB' };
   }
+
+  @Delete('delete-all')
+async deleteAll(): Promise<{ message: string }> {
+  await this.pokemonService.deleteAllPokemon();
+  return { message: 'Semua data Pokémon berhasil dihapus' };
+}
+
 }
