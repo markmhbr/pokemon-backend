@@ -1,27 +1,20 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { PokemonService } from './pokemon.service';
-import { CreatePokemonDto } from './dto/create-pokemon.dto';
+import { Pokemon } from './schemas/pokemon.schema';
 
 @Controller('pokemon')
 export class PokemonController {
   constructor(private readonly pokemonService: PokemonService) {}
 
-  @Post()
-  async create(@Body() createPokemonDto: CreatePokemonDto) {
-    console.log('Body:', createPokemonDto); // Tambah ini untuk cek
-    return this.pokemonService.create(createPokemonDto);
-  }
-
-
-  @Get('fetch')
-  async fetchPokemonData(): Promise<string> {
-    await this.pokemonService.fetchAndSaveAllPokemon();
-    return 'Pokémon berhasil di-fetch dan disimpan!';
-  }
-  
   @Get()
-  async findAll() {
+  async findAll(): Promise<Pokemon[]> {
     return this.pokemonService.findAll();
   }
 
+  // Ini endpoint baru buat fetch semua data dari PokéAPI
+  @Get('fetch')
+  async fetchAllPokemon(): Promise<{ message: string }> {
+    await this.pokemonService.fetchAndSavePokemonData();
+    return { message: 'Data Pokémon berhasil diambil dan disimpan ke MongoDB' };
+  }
 }

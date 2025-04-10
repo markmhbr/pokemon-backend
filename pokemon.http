@@ -1,2 +1,1 @@
-### Get all Pokémon
-GET http://localhost:3000/pokemon
+GET http://localhost:3000/pokemon/fetch

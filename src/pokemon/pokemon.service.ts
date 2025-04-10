@@ -1,12 +1,9 @@
-import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
+import { Pokemon, PokemonDocument } from './schemas/pokemon.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Pokemon, PokemonDocument } from './schemas/pokemon.schema';
 import { firstValueFrom } from 'rxjs';
-import { CreatePokemonDto } from './dto/create-pokemon.dto';
-
-
 
 @Injectable()
 export class PokemonService {
@@ -15,43 +12,52 @@ export class PokemonService {
     private readonly httpService: HttpService,
   ) {}
 
+  async fetchAndSavePokemonData(): Promise<void> {
+    await this.pokemonModel.deleteMany({}); // Bersihin dulu biar fresh
+  
+    const limit = 1000;
+    const offset = 0;
+  
+    const res = await firstValueFrom(
+      this.httpService.get(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
+    );
+  
+    const results = res.data.results;
+  
+    for (const result of results) {
+      const detailRes = await firstValueFrom(this.httpService.get(result.url));
+      const detail = detailRes.data;
+  
+      const about = {
+        types: detail.types.map(t => t.type.name),
+        height: detail.height,
+        weight: detail.weight,
+        abilities: detail.abilities.map(a => a.ability.name),
+        experience: detail.base_experience,
+        moves: detail.moves.map(m => m.move.name),
+      };
+  
+      const stats: any = {};
+      for (const s of detail.stats) {
+        const name = s.stat.name.replace('-', '_'); // biar kayak "special_attack"
+        stats[name] = s.base_stat;
+      }
+  
+      const newPokemon = new this.pokemonModel({
+        name: detail.name,
+        level: Math.floor(Math.random() * 100),
+        image: detail.sprites.other['official-artwork'].front_default,
+        about,
+        stats,
+      });
+  
+      await newPokemon.save();
+    }
+  }
+  
+    // Tambahin ini di bawah method fetchAndSavePokemonData
   async findAll(): Promise<Pokemon[]> {
     return this.pokemonModel.find().exec();
-  }  
-
-  async create(createPokemonDto: CreatePokemonDto): Promise<Pokemon> {
-    return this.pokemonModel.create(createPokemonDto);
   }
-
-  async fetchAndSaveAllPokemon(): Promise<void> {
-    const url = 'https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0';
-    const response = await firstValueFrom(this.httpService.get(url));
-
-    const results = response.data.results;
-    console.log('Total Pokémon:', results.length);
-
-    const first10 = results.slice(0, 10);
-
-    for (const pokemon of first10) {
-      const detail = await firstValueFrom(this.httpService.get(pokemon.url));
-
-      const data = {
-        name: detail.data.name,
-        type: detail.data.types[0]?.type.name || 'unknown',
-        level: Math.floor(Math.random() * 100),
-        height: detail.data.height,
-        weight: detail.data.weight,
-        abilities: detail.data.abilities.map((a) => a.ability.name),
-        image: detail.data.sprites.other['official-artwork'].front_default,
-        stats: detail.data.stats.map((s) => ({
-          name: s.stat.name,
-          base_stat: s.base_stat,
-        })),
-      };
-
-      await this.pokemonModel.create(data);
-    }
-
-    console.log('Pokémon berhasil disimpan!');
-  }
+  
 }
