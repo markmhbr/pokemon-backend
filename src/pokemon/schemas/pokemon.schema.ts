@@ -6,8 +6,11 @@ export type PokemonDocument = Pokemon & Document;
 @Schema()
 export class Pokemon {
   @Prop()
-  name: string;
+  id: string;
 
+  @Prop()
+  name: string;
+  
   @Prop()
   level: number;
 

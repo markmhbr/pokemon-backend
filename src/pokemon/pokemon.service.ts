@@ -44,6 +44,7 @@ export class PokemonService {
       }
   
       const newPokemon = new this.pokemonModel({
+        id: detail.id,
         name: detail.name,
         level: Math.floor(Math.random() * 100),
         image: detail.sprites.other['official-artwork'].front_default,
