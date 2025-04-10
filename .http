@@ -1,1 +1,1 @@
-DELETE https://pokemon-backend-production-80c9.up.railway.app/pokemon/delete-all
+GET https://pokemon-backend-production-80c9.up.railway.app/pokemon
