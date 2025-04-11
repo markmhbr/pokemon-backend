@@ -57,13 +57,14 @@ export class PokemonService {
   }
   
     // Tambahin ini di bawah method fetchAndSavePokemonData
-    async findAll(limit: number, offset: number): Promise<Pokemon[]> {
-      return this.pokemonModel.find()
-        .skip(offset)
-        .limit(limit)
+    async findAll(limit?: number, offset?: number): Promise<Pokemon[]> {
+      return this.pokemonModel
+        .find()
+        .sort({ id: 1 }) // tambahkan ini
+        .skip(offset ?? 0)
+        .limit(limit ?? 21)
         .exec();
     }
-    
     
 
   async deleteAllPokemon(): Promise<void> {
