@@ -59,7 +59,6 @@ export class PokemonService {
     // Tambahin ini di bawah method fetchAndSavePokemonData
     async findAll(limit: number, offset: number): Promise<Pokemon[]> {
       return this.pokemonModel.find()
-        .sort({ id: 1 }) // urut berdasarkan id
         .skip(offset)
         .limit(limit)
         .exec();

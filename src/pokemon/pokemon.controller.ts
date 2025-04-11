@@ -11,9 +11,9 @@ export class PokemonController {
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
   ): Promise<Pokemon[]> {
-    const limitNumber = parseInt(limit ?? '21');
-    const offsetNumber = parseInt(offset ?? '0');
-    return this.pokemonService.findAll(limitNumber, offsetNumber);
+    const parsedLimit = parseInt(limit ?? '') || 21;
+    const parsedOffset = parseInt(offset ?? '') || 0;
+    return this.pokemonService.findAll(parsedLimit, parsedOffset);
   }
 
   // Ini endpoint baru buat fetch semua data dari PokéAPI
