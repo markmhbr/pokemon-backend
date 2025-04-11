@@ -7,9 +7,14 @@ export class PokemonController {
   constructor(private readonly pokemonService: PokemonService) {}
 
   @Get()
-  async findAll(): Promise<Pokemon[]> {
-    return this.pokemonService.findAll();
+  findAll(
+    @Query('limit') limit = 21,
+    @Query('offset') offset = 0
+  ): Promise<Pokemon[]> {
+    return this.pokemonService.findAll(Number(limit), Number(offset));
   }
+
+
 
   // Ini endpoint baru buat fetch semua data dari PokéAPI
   @Get('fetch')
