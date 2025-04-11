@@ -65,6 +65,12 @@ export class PokemonService {
     await this.pokemonModel.deleteMany({});
   }
   
+   // Ambil Pokémon berdasarkan nama
+   async findByName(name: string): Promise<Pokemon | null> {
+    return this.pokemonModel.findOne({
+      name: new RegExp(`^${name}$`, 'i'), // case-insensitive
+    }).exec();
+  }
   
   
 }

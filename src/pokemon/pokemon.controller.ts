@@ -1,4 +1,4 @@
-import { Controller, Get, Delete } from '@nestjs/common';
+import { Controller, Get, Delete, Param } from '@nestjs/common';
 import { PokemonService } from './pokemon.service';
 import { Pokemon } from './schemas/pokemon.schema';
 
@@ -19,9 +19,15 @@ export class PokemonController {
   }
 
   @Delete('delete-all')
-async deleteAll(): Promise<{ message: string }> {
-  await this.pokemonService.deleteAllPokemon();
-  return { message: 'Semua data Pokémon berhasil dihapus' };
+  async deleteAll(): Promise<{ message: string }> {
+    await this.pokemonService.deleteAllPokemon();
+    return { message: 'Semua data Pokémon berhasil dihapus' };
+  }
+
+  @Get(':name')
+async findByName(@Param('name') name: string): Promise<Pokemon | null> {
+  return this.pokemonService.findByName(name);
 }
+
 
 }
