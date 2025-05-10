@@ -1,1 +1,6 @@
-GET https://pokemon-backend-production-80c9.up.railway.app/pokemon
+POST https://pokemon-backend-production-80c9.up.railway.app/auth/login
+
+{
+  "username": "admin",
+  "password": "$2b$12$RSQxVwqaH.k8XQMSOppsvOxHBsnbHR4VscAemvhMWz11O5M6fuHKO"
+}

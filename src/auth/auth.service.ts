@@ -10,15 +10,19 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
+  try {
     const userDoc = await this.usersService.findOne(username);
-    
-    // Pastikan userDoc adalah instance dari Document
     if (userDoc && userDoc instanceof Document && await bcrypt.compare(password, userDoc.password)) {
-      const { password, ...result } = userDoc.toObject(); // ✅ .toObject() hanya dari Document
+      const { password, ...result } = userDoc.toObject();
       return result;
     }
     return null;
+  } catch (err) {
+    console.error('❌ Error in validateUser:', err); // 🔍 log error
+    throw err;
   }
+}
+
 
   async login(user: any) {
     return {
